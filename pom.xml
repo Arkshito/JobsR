@@ -205,6 +205,12 @@
             <artifactId>nexo</artifactId>
             <version>1.21.0</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>dev.triumphteam</groupId>
+                    <artifactId>triumph-gui</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 	</dependencies>
 	<repositories>
