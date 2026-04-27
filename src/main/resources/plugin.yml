@@ -8,7 +8,7 @@ website: https://www.spigotmc.org/resources/4216/
 authors: [Zrips]
 contributors: [montlikadani]
 depend: [CMILib]
-softdepend: [Vault, Essentials, MythicMobs, WorldGuard, MyPet, PlaceholderAPI, EcoEnchants, WildStacker, StackMob, PyroFishingPro, BlockTracker, CustomFishing, CustomCrops]
+softdepend: [Vault, Essentials, MythicMobs, WorldGuard, MyPet, PlaceholderAPI, EcoEnchants, WildStacker, StackMob, PyroFishingPro, BlockTracker, CustomFishing, CustomCrops, Nexo]
 commands:
   jobs:
     description: Jobs
@@ -81,10 +81,14 @@ permissions:
       jobs.command.iteminfo: true
       jobs.command.itembonus: true
       jobs.command.blockinfo: true
+      jobs.command.payouts: true
       jobs.command.skipquest: true
       jobs.command.schedule: true
   jobs.command.browse:
     description: Grants access to the browse command
+    default: true
+  jobs.command.payouts:
+    description: Grants access to the payouts command
     default: true
   jobs.command.skipquest:
     description: Grants access to the skipquest command
