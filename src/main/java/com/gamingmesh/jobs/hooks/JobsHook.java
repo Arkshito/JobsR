@@ -12,6 +12,7 @@ import com.gamingmesh.jobs.hooks.MythicMobs.MythicMobs5;
 import com.gamingmesh.jobs.hooks.MythicMobs.MythicMobs5Listener;
 import com.gamingmesh.jobs.hooks.WorldGuard.WorldGuardManager;
 import com.gamingmesh.jobs.hooks.blockTracker.BlockTrackerManager;
+import com.gamingmesh.jobs.hooks.customCrops.CustomCropsListener;
 import com.gamingmesh.jobs.hooks.pyroFishingPro.PyroFishingProListener;
 import com.gamingmesh.jobs.hooks.stackMob.StackMobManager;
 import com.gamingmesh.jobs.hooks.wildStacker.WildStackerHandler;
@@ -147,6 +148,17 @@ public enum JobsHook {
                 return;
 
             JavaPlugin.getPlugin(Jobs.class).getServer().getPluginManager().registerEvents(new PyroFishingProListener(), JavaPlugin.getPlugin(Jobs.class));
+            printListenerMessage(this);
+        }
+    },
+    CustomCrops {
+        @Override
+        public void registerListener() {
+            if (!isPresent())
+                return;
+
+            JavaPlugin.getPlugin(Jobs.class).getServer().getPluginManager()
+                .registerEvents(new CustomCropsListener(), JavaPlugin.getPlugin(Jobs.class));
             printListenerMessage(this);
         }
     },

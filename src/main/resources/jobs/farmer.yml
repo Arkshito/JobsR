@@ -361,3 +361,20 @@ Farmer:
       income: 7.5
       points: 7.5
       experience: 7.5
+  # CustomCrops integration — use the crop ID defined in CustomCrops config
+  # Negative income acts as a penalty (configure as needed per server)
+  CustomCropsPlant:
+    wheat_crop:
+      income: 0.5
+      points: 0.5
+      experience: 1.0
+  CustomCropsHarvest:
+    wheat_crop:
+      income: 2.0
+      points: 1.5
+      experience: 3.0
+  CustomCropsWater:
+    default_pot:
+      income: 0.3
+      points: 0.3
+      experience: 0.5
