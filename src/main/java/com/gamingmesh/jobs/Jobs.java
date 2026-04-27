@@ -886,6 +886,7 @@ public final class Jobs extends JavaPlugin {
 		pm.registerEvents(new JobsChatEvent(getInstance()), getInstance());
 
 		JobsHook.PyroFishingPro.registerListener();
+		JobsHook.CustomCrops.registerListener();
 		JobsHook.mcMMO.registerListener();
 		JobsHook.MythicMobs.registerListener();
 
