@@ -11,11 +11,13 @@ import com.gamingmesh.jobs.actions.CustomCropsInfo;
 import com.gamingmesh.jobs.container.ActionType;
 import com.gamingmesh.jobs.listeners.JobsPaymentListener;
 
+import com.flowpowered.nbt.Tag;
+
+import net.momirealms.customcrops.api.core.block.BreakReason;
 import net.momirealms.customcrops.api.core.mechanic.crop.CropConfig;
 import net.momirealms.customcrops.api.core.mechanic.pot.PotConfig;
 import net.momirealms.customcrops.api.core.world.CustomCropsBlockState;
 import net.momirealms.customcrops.api.event.CropBreakEvent;
-import net.momirealms.customcrops.api.event.CropBreakEvent.BreakReason;
 import net.momirealms.customcrops.api.event.CropPlantEvent;
 import net.momirealms.customcrops.api.event.PotFillEvent;
 
@@ -106,10 +108,11 @@ public class CustomCropsListener implements Listener {
 
     private int getGrowthPoints(CustomCropsBlockState state) {
         try {
-            Object tag = state.get("point");
+            Tag<?> tag = state.get("point");
             if (tag == null)
                 return 0;
-            return Integer.parseInt(tag.toString());
+            Object value = tag.getValue();
+            return value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
         } catch (Exception e) {
             return 0;
         }
@@ -117,10 +120,11 @@ public class CustomCropsListener implements Listener {
 
     private int getPotWaterLevel(CustomCropsBlockState state) {
         try {
-            Object tag = state.get("water");
+            Tag<?> tag = state.get("water");
             if (tag == null)
                 return 0;
-            return Integer.parseInt(tag.toString());
+            Object value = tag.getValue();
+            return value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
         } catch (Exception e) {
             return 0;
         }

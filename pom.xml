@@ -196,7 +196,7 @@
         <dependency>
             <groupId>net.momirealms</groupId>
             <artifactId>custom-crops</artifactId>
-            <version>3.6.50</version>
+            <version>3.6.45.1</version>
             <scope>provided</scope>
         </dependency>
 	</dependencies>
