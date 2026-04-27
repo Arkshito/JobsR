@@ -420,10 +420,12 @@ public class GuiManager {
 
 				JobInfo jInfo = action.getInfo().get(z);
 
-				boolean isCustomCropsHarvest = action.getType() == ActionType.CUSTOMCROPSHARVEST;
+				boolean useNexoItem = NexoHook.isEnabled() && (
+					action.getType() == ActionType.CUSTOMCROPSHARVEST ||
+					action.getType() == ActionType.CUSTOMFISHING);
 
 				if (guiItem == null) {
-					if (isCustomCropsHarvest && NexoHook.isEnabled()) {
+					if (useNexoItem) {
 						ItemStack nexoItem = NexoHook.getItem(jInfo.getName());
 						if (nexoItem != null)
 							guiItem = nexoItem;
@@ -466,7 +468,7 @@ public class GuiManager {
 					continue;
 
 				String itemName = jInfo.getRealisticName();
-				if (isCustomCropsHarvest && NexoHook.isEnabled()) {
+				if (useNexoItem) {
 					String nexoName = NexoHook.getDisplayName(jInfo.getName());
 					if (nexoName != null)
 						itemName = nexoName;
