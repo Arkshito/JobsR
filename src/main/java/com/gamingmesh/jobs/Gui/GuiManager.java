@@ -22,6 +22,7 @@ import com.gamingmesh.jobs.container.Job;
 import com.gamingmesh.jobs.container.JobInfo;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
+import com.gamingmesh.jobs.hooks.Nexo.NexoHook;
 import com.gamingmesh.jobs.i18n.Language;
 
 import net.Zrips.CMILib.CMILib;
@@ -419,21 +420,31 @@ public class GuiManager {
 
 				JobInfo jInfo = action.getInfo().get(z);
 
+				boolean isCustomCropsHarvest = action.getType() == ActionType.CUSTOMCROPSHARVEST;
+
 				if (guiItem == null) {
-					try {
-						CMIItemStack item = CMILib.getInstance().getItemManager().getItem(jInfo.getName());
-						if (item != null && item.getCMIType().isValidAsItemStack())
-							guiItem = item.getItemStack();
-					} catch (Exception e) {
-						e.printStackTrace();
+					if (isCustomCropsHarvest && NexoHook.isEnabled()) {
+						ItemStack nexoItem = NexoHook.getItem(jInfo.getName());
+						if (nexoItem != null)
+							guiItem = nexoItem;
 					}
 
-					if (action.getType() == ActionType.KILL) {
-						CMIEntityType type = CMIEntityType.get(jInfo.getName());
-						if (type != null) {
-							ItemStack item = type.getHead();
-							if (item != null)
-								guiItem = item;
+					if (guiItem == null) {
+						try {
+							CMIItemStack item = CMILib.getInstance().getItemManager().getItem(jInfo.getName());
+							if (item != null && item.getCMIType().isValidAsItemStack())
+								guiItem = item.getItemStack();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						if (action.getType() == ActionType.KILL) {
+							CMIEntityType type = CMIEntityType.get(jInfo.getName());
+							if (type != null) {
+								ItemStack item = type.getHead();
+								if (item != null)
+									guiItem = item;
+							}
 						}
 					}
 				}
@@ -455,6 +466,11 @@ public class GuiManager {
 					continue;
 
 				String itemName = jInfo.getRealisticName();
+				if (isCustomCropsHarvest && NexoHook.isEnabled()) {
+					String nexoName = NexoHook.getDisplayName(jInfo.getName());
+					if (nexoName != null)
+						itemName = nexoName;
+				}
 				String val = "";
 
 				if (income != 0.0)
