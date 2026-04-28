@@ -353,6 +353,9 @@ public class LanguageManager {
             c.get("command.info.help.bonus", "&eThis job has a bonus of &2[bonus]% &ebecause there are not enough players working in it.");
             c.get("command.info.help.args", "[jobname] [action]");
             Jobs.getGCManager().getCommandArgs().put("info", Arrays.asList("[jobname]", "[action]"));
+            c.get("command.payouts.help.info", "Show a job's payouts in the GUI.");
+            c.get("command.payouts.help.args", "[jobname]");
+            Jobs.getGCManager().getCommandArgs().put("payouts", Arrays.asList("[jobname]"));
             c.get("command.info.help.actions", "&eValid actions are: &f%actions%");
             c.get("command.info.help.max", " - &emax level:&f ");
             c.get("command.info.help.newMax", " &eMax level: &f[max]");

@@ -362,6 +362,13 @@ public class GuiManager {
 		}
 	}
 
+	private static final Set<ActionType> PER_ITEM_ACTION_TYPES = new HashSet<>(Arrays.asList(
+		ActionType.CUSTOMCROPSHARVEST,
+		ActionType.CUSTOMCROPSPLANT,
+		ActionType.CUSTOMCROPSWATER,
+		ActionType.CUSTOMFISHING
+	));
+
 	public void openJobsGUI(Player player, Job job) {
 
 		final List<actionList> actionList = new ArrayList<>();
@@ -373,9 +380,15 @@ public class GuiManager {
 			if (info == null || info.isEmpty())
 				continue;
 
-			for (int i = 0; i < info.size(); i += chunkSize) {
-				List<JobInfo> portion = info.subList(i, Math.min(i + chunkSize, info.size()));
-				actionList.add(new actionList(actionType, portion));
+			if (PER_ITEM_ACTION_TYPES.contains(actionType)) {
+				for (JobInfo single : info) {
+					actionList.add(new actionList(actionType, Arrays.asList(single)));
+				}
+			} else {
+				for (int i = 0; i < info.size(); i += chunkSize) {
+					List<JobInfo> portion = info.subList(i, Math.min(i + chunkSize, info.size()));
+					actionList.add(new actionList(actionType, portion));
+				}
 			}
 		}
 
