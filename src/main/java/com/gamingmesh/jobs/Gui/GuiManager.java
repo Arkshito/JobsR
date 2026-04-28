@@ -424,8 +424,76 @@ public class GuiManager {
 			if (pi.isBreak())
 				break;
 
+			boolean isPerItem = PER_ITEM_ACTION_TYPES.contains(action.getType());
+			String actionLabel = Jobs.getLanguage().getMessage("command.info.output." + action.getType().getName().toLowerCase() + ".info");
+
+			// Per-item types: one JobInfo per actionList entry, each gets its own item/name
+			if (isPerItem && !action.getInfo().isEmpty()) {
+				JobInfo jInfo = action.getInfo().get(0);
+
+				boolean useNexoItem = NexoHook.isEnabled() && (
+					action.getType() == ActionType.CUSTOMCROPSHARVEST ||
+					action.getType() == ActionType.CUSTOMFISHING);
+
+				ItemStack guiItem = null;
+				if (useNexoItem) {
+					guiItem = NexoHook.getItem(jInfo.getName());
+				}
+				if (guiItem == null) {
+					try {
+						CMIItemStack cmiItem = CMILib.getInstance().getItemManager().getItem(jInfo.getName());
+						if (cmiItem != null && cmiItem.getCMIType().isValidAsItemStack())
+							guiItem = cmiItem.getItemStack();
+					} catch (Exception ignored) {}
+				}
+				if (guiItem == null)
+					guiItem = job.getGuiItem().clone();
+
+				double income = jInfo.getIncome(level, numjobs, jPlayer.maxJobsEquation);
+				income = boost.getFinalAmount(CurrencyType.MONEY, income);
+				String incomeColor = income >= 0 ? "" : CMIChatColor.DARK_RED.toString();
+
+				double xp = jInfo.getExperience(level, numjobs, jPlayer.maxJobsEquation);
+				xp = boost.getFinalAmount(CurrencyType.EXP, xp);
+				String xpColor = xp >= 0 ? "" : CMIChatColor.GRAY.toString();
+
+				double points = jInfo.getPoints(level, numjobs, jPlayer.maxJobsEquation);
+				points = boost.getFinalAmount(CurrencyType.POINTS, points);
+				String pointsColor = points >= 0 ? "" : CMIChatColor.RED.toString();
+
+				if (income == 0D && points == 0D && xp == 0D) {
+					i++;
+					continue;
+				}
+
+				String displayName = useNexoItem ? NexoHook.getDisplayName(jInfo.getName()) : null;
+				if (displayName == null)
+					displayName = jInfo.getRealisticName();
+
+				String val = "";
+				if (income != 0.0)
+					val += Jobs.getLanguage().getMessage("command.info.help.money", "%money%", incomeColor + CurrencyType.MONEY.format(income));
+				if (points != 0.0)
+					val += Jobs.getLanguage().getMessage("command.info.help.points", "%points%", pointsColor + CurrencyType.POINTS.format(points));
+				if (xp != 0.0)
+					val += Jobs.getLanguage().getMessage("command.info.help.exp", "%exp%", xpColor + CurrencyType.EXP.format(xp));
+
+				List<String> lore = new ArrayList<>();
+				lore.add(actionLabel);
+				lore.add(val.trim());
+
+				ItemMeta meta = guiItem.getItemMeta();
+				meta.setDisplayName(displayName);
+				meta.setLore(lore);
+				guiItem.setItemMeta(meta);
+				items.add(guiItem.clone());
+				i++;
+				continue;
+			}
+
+			// Default: original grouping logic
 			List<String> lore = new ArrayList<>();
-			lore.add(Jobs.getLanguage().getMessage("command.info.output." + action.getType().getName().toLowerCase() + ".info"));
+			lore.add(actionLabel);
 			ItemStack guiItem = action.getType().getGuiItems().isEmpty() ? null : action.getType().getGuiItems().get(i % action.getType().getGuiItems().size());
 			i++;
 
@@ -433,39 +501,26 @@ public class GuiManager {
 
 				JobInfo jInfo = action.getInfo().get(z);
 
-				boolean useNexoItem = NexoHook.isEnabled() && (
-					action.getType() == ActionType.CUSTOMCROPSHARVEST ||
-					action.getType() == ActionType.CUSTOMFISHING);
-
 				if (guiItem == null) {
-					if (useNexoItem) {
-						ItemStack nexoItem = NexoHook.getItem(jInfo.getName());
-						if (nexoItem != null)
-							guiItem = nexoItem;
+					try {
+						CMIItemStack item = CMILib.getInstance().getItemManager().getItem(jInfo.getName());
+						if (item != null && item.getCMIType().isValidAsItemStack())
+							guiItem = item.getItemStack();
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 
-					if (guiItem == null) {
-						try {
-							CMIItemStack item = CMILib.getInstance().getItemManager().getItem(jInfo.getName());
-							if (item != null && item.getCMIType().isValidAsItemStack())
-								guiItem = item.getItemStack();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
-						if (action.getType() == ActionType.KILL) {
-							CMIEntityType type = CMIEntityType.get(jInfo.getName());
-							if (type != null) {
-								ItemStack item = type.getHead();
-								if (item != null)
-									guiItem = item;
-							}
+					if (action.getType() == ActionType.KILL) {
+						CMIEntityType type = CMIEntityType.get(jInfo.getName());
+						if (type != null) {
+							ItemStack item = type.getHead();
+							if (item != null)
+								guiItem = item;
 						}
 					}
 				}
 
 				double income = jInfo.getIncome(level, numjobs, jPlayer.maxJobsEquation);
-
 				income = boost.getFinalAmount(CurrencyType.MONEY, income);
 				String incomeColor = income >= 0 ? "" : CMIChatColor.DARK_RED.toString();
 
@@ -480,24 +535,15 @@ public class GuiManager {
 				if (income == 0D && points == 0D && xp == 0D)
 					continue;
 
-				String itemName = jInfo.getRealisticName();
-				if (useNexoItem) {
-					String nexoName = NexoHook.getDisplayName(jInfo.getName());
-					if (nexoName != null)
-						itemName = nexoName;
-				}
 				String val = "";
-
 				if (income != 0.0)
 					val += Jobs.getLanguage().getMessage("command.info.help.money", "%money%", incomeColor + CurrencyType.MONEY.format(income));
-
 				if (points != 0.0)
 					val += Jobs.getLanguage().getMessage("command.info.help.points", "%points%", pointsColor + CurrencyType.POINTS.format(points));
-
 				if (xp != 0.0)
 					val += Jobs.getLanguage().getMessage("command.info.help.exp", "%exp%", xpColor + CurrencyType.EXP.format(xp));
 
-				lore.add(Jobs.getLanguage().getMessage("command.info.help.material", "%material%", itemName) + val);
+				lore.add(Jobs.getLanguage().getMessage("command.info.help.material", "%material%", jInfo.getRealisticName()) + val);
 			}
 
 			if (guiItem == null)
