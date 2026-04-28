@@ -416,6 +416,19 @@ command:
       brush:
         info: '&ePincelar'
         none: Con la profesión de %jobname% no vas a recibir dinero por cepillar bloques.
+      customcropsplant:
+        info: '&ePlantación'
+        none: Con la profesión de %jobname% no vas a recibir dinero por plantar cultivos.
+      customcropsharvest:
+        info: '&eCosecha'
+        none: Con la profesión de %jobname% no vas a recibir dinero por cosechar cultivos.
+      customcropswater:
+        info: '&eRiego'
+        none: Con la profesión de %jobname% no vas a recibir dinero por regar cultivos.
+  payouts:
+    help:
+      info: Muestra los pagos de una profesión en la interfaz gráfica.
+      args: '[jobname]'
   playerinfo:
     help:
       info: Muestra cuanto se paga a alguien y por que acción.
